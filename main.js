@@ -1,6 +1,8 @@
 var har = require('./sample_har.json')
 var http = require('http');
+var async = require('async');
 var urlParser = require('url');
+
 
 
 
@@ -12,37 +14,37 @@ var urlParser = require('url');
 //ignore server.arcgisonline.com
 
 var totalTime = 0;
+var count = 0;
+var counterCheck = 0;
 
-function processArrayAsync(items, process) {
-    var todo = items.concat();
-
-    setTimeout(function() {
-        process(todo.shift());
-        if(todo.length > 0) {
-            setTimeout(arguments.callee, 25);
-        }
-    }, 25);
-}
-
-var checkPerformance = function(entry){
-	var u = entry.request.url;
-
-	if(u.match('noaa.gov')){
-		var url = urlParser.parse(u);
-		var start = new Date();
-		http.get({host: url.host,path: url.path, port: 80}, function(res) {
-		    console.log('start : '+ start);
-		    console.log('end   : '+ new Date());
-		    var end = (new Date() - start)/1000.00;
-		    totalTime = totalTime + end;
-		    console.log('time  : '+ end , 's');
-		    console.log('-----------------------------------------------');
-		    
-		});
+function done (end) {
+	console.log("**********************************************************************");
+	totalTime = totalTime + end;
+	count = count + 1;
+	
+	if(count >= counterCheck){
+		console.log("total time: "+ totalTime,'s');
 	}
 }
 
-processArrayAsync(har.log.entries, checkPerformance);
+async.each(har.log.entries,function(e,done) {
+	if(e.request.url.match('noaa.gov')){
+			counterCheck = counterCheck + 1;
+			var url = urlParser.parse(e.request.url);
+			var start = new Date();
+
+			http.get({host: url.host,path: url.path, port: 80}, function(res) {
+			    console.log('start : '+ start);
+			    console.log('end   : '+ new Date());
+			    var end = (new Date() - start)/1000.00;
+			    console.log('time  : '+ end , 's');
+			    console.log('-----------------------------------------------');
+			    done(end);
+			});
+		}
+}, function (err) {
+	console.log('error..');
+	console.log(err);
+});
 
 
-// console.log("total time: "+ totalTime,'s');
