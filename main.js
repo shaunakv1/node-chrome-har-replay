@@ -1,11 +1,8 @@
-var har = require('./sample_har.json')
+var har = require('./sample_har.json');
 var http = require('http');
+var fs = require('fs');
 var async = require('async');
 var urlParser = require('url');
-
-
-
-
 
 
 // console.log(url.host);
@@ -47,6 +44,13 @@ function doneRequest(end){
 
     if(count >= counterCheck){
         console.log("total time: "+ totalTime,'s');
+        var log = require('./log.json');
+        log.push([new Date(), totalTime]);
+        fs.writeFile("./log.json", JSON.stringify(log), function(err) {
+                if(err) {
+                    console.log(err);
+                }
+            });
     }
 }
 
