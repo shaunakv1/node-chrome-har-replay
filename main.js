@@ -19,11 +19,11 @@ function PerformanceTest(){
                     var start = new Date();
 
                     http.get({host: url.host,path: url.path, port: 80}, function(res) {
-                        /*console.log('start : '+ start);
-                        console.log('end   : '+ new Date());*/
+                        console.log('start : '+ start);
+                        console.log('end   : '+ new Date());
                         var end = (new Date() - start)/1000.00;
-                        /*console.log('time  : '+ end , 's');
-                        console.log('-----------------------------------------------');*/
+                        console.log('time  : '+ end , 's');
+                        console.log('-----------------------------------------------');
                         THIS.doneRequest(end);
                     });
                 }
@@ -59,5 +59,5 @@ PerformanceTest.prototype.doneRequest = function (end){
 };
 
 new PerformanceTest();
-setInterval(function() { new PerformanceTest(); }, 1000 * 20);
+setInterval(function() { new PerformanceTest(); }, 1000 * 60 * 30 );
 
