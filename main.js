@@ -4,6 +4,7 @@ var fs = require('fs');
 var async = require('async');
 var urlParser = require('url');
 
+var copyLogsTo = "L:/httpd/apps/ads/llv-network-performance/"; //mark as null if copying is not needed
 
 function PerformanceTest(){
     this.totalTime = 0;
@@ -45,7 +46,7 @@ PerformanceTest.prototype.doneRequest = function (end){
     if(THIS.count >= THIS.counterCheck){
         console.log("...done...total time: "+ THIS.totalTime+"s");
         var log = require('./log.json');
-        var time = new Date(); 
+        var time = new Date();
         log.push([time, THIS.totalTime]);
         fs.writeFile("./log.json", JSON.stringify(log), function(err) {
                 if(err) {
@@ -55,6 +56,7 @@ PerformanceTest.prototype.doneRequest = function (end){
                     THIS.totalTime = 0;
                     THIS.count = 0;
                     THIS.counterCheck = 0;
+                    if(copyLogsTo) fs.createReadStream('./log.json').pipe(fs.createWriteStream(copyLogsTo+'log.json'));
                 }
             });
 
@@ -66,6 +68,7 @@ PerformanceTest.prototype.doneRequest = function (end){
                 }
                 else{
                     THIS.totalRequests = 0;
+                    if(copyLogsTo) fs.createReadStream('./avg_log.json').pipe(fs.createWriteStream(copyLogsTo+'avg_log.json'));
                 }
             });
     }

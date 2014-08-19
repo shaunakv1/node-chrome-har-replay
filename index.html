@@ -4,22 +4,21 @@
 	<title>Har Replay- Network Performance</title>
 </head>
 <body>
-	
 	<div id="chart" style="width:100%; height:800px"></div>
-	<h3>450 Requests, size: 2.5mb approx</h3>
+	<h3>330 Requests (approx), size: 2.5mb (approx)</h3>
 	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
 	<script src="http://code.highcharts.com/highcharts.js"></script>
 	<script>
 		$.getJSON("log.json",function (log) {
-			//$.getJSON("avg_log.json",function (avg) {
+			$.getJSON("avg_log.json",function (avg) {
 				var avg = [];
-				/*avg.forEach(function (v) {
+				avg.forEach(function (v) {
 					v[0] = Date.parse(v[0]);
-				});*/
+				});
 
 				log.forEach(function (v) {
 					v[0] = Date.parse(v[0]);
-					avg.push([v[0], (v[1]/250)]);
+					//avg.push([v[0], (v[1]/250)]);
 				});
 				console.log(avg);
 				$('#chart').highcharts({
@@ -42,7 +41,7 @@
 			        xAxis: {
 			            type: 'datetime',
 			            tickInterval: 1000 * 60 * 60 * 6,
-			            
+
 			           min: log[0][0],
 			           max: log[log.length -1 ][0],
 			           dateTimeLabelFormats : {
@@ -71,7 +70,7 @@
 			        	data: avg
 			        }]
 	    		});
-			//});
+			});
 		});
 	</script>
 </body>
