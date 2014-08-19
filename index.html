@@ -10,15 +10,15 @@
 	<script src="http://code.highcharts.com/highcharts.js"></script>
 	<script>
 		$.getJSON("log.json",function (log) {
-			$.getJSON("avg_log.json",function (avg) {
+			//$.getJSON("avg_log.json",function (avg) {
 				var avg = [];
-				avg.forEach(function (v) {
+				/*avg.forEach(function (v) {
 					v[0] = Date.parse(v[0]);
-				});
+				});*/
 
 				log.forEach(function (v) {
 					v[0] = Date.parse(v[0]);
-					//avg.push([v[0], (v[1]/250)]);
+					avg.push([v[0], (v[1]/250)]);
 				});
 				console.log(avg);
 				$('#chart').highcharts({
@@ -70,7 +70,7 @@
 			        	data: avg
 			        }]
 	    		});
-			});
+			//});
 		});
 	</script>
 </body>
