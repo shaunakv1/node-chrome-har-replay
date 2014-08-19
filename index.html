@@ -11,10 +11,18 @@
 	<script src="http://code.highcharts.com/highcharts.js"></script>
 	<script>
 		$.getJSON("log.json",function (log) {
-			log.forEach(function (v) {
-				v[0] = Date.parse(v[0]);
-			});
-			$('#chart').highcharts({
+			//$.getJSON("avg_log.json",function (avg) {
+				var avg = [];
+				/*avg.forEach(function (v) {
+					v[0] = Date.parse(v[0]);
+				});*/
+
+				log.forEach(function (v) {
+					v[0] = Date.parse(v[0]);
+					avg.push([v[0], (v[1]/250)]);
+				});
+				console.log(avg);
+				$('#chart').highcharts({
 			        chart: {
 			            type: 'spline'
 			        },
@@ -46,7 +54,7 @@
 			            title: {
 			                text: 'Total Response Time (secs)'
 			            },
-			            min: 300,
+			            min: 0,
 			            max: 2000
 
 			        },
@@ -58,8 +66,12 @@
 			        series: [{
 			            name: 'Total Time',
 			            data: log
+			        },{
+			        	name: 'Average Time',
+			        	data: avg
 			        }]
 	    		});
+			//});
 		});
 	</script>
 </body>
