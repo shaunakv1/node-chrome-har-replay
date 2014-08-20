@@ -8,7 +8,9 @@
   },
   "devDependencies": {
     "async": "~0.9.0",
-    "forever": "~0.11.1"
+    "forever": "~0.11.1",
+    "request": "~2.40.0",
+    "moment": "~2.8.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
