@@ -7,6 +7,7 @@ var urlParser = require('url');
 var copyLogsTo = "L:/httpd/apps/ads/llv-network-performance/logs/"; //mark as null if copying is not needed
 
 function PerformanceTest(options){
+    this.options = options;
     this.har = require('./har/'+ options.har);
     this.logFile = './logs/'+ options.log;
     this.avgLogFile = './logs/'+ options.avgLog;
@@ -68,7 +69,7 @@ PerformanceTest.prototype.doneRequest = function (end){
                     THIS.count = 0;
                     THIS.counterCheck = 0;
                     THIS.successRequests =0;
-                    if(copyLogsTo) fs.createReadStream(THIS.logFile).pipe(fs.createWriteStream(copyLogsTo+THIS.logFile));
+                    if(copyLogsTo) fs.createReadStream(THIS.logFile).pipe(fs.createWriteStream(copyLogsTo+THIS.options.log));
                 }
             });
 
@@ -80,7 +81,7 @@ PerformanceTest.prototype.doneRequest = function (end){
                     }
                     else{
                         THIS.totalRequests = 0;
-                        if(copyLogsTo) fs.createReadStream(THIS.avgLogFile).pipe(fs.createWriteStream(copyLogsTo+'avg_log.json'));
+                        if(copyLogsTo) fs.createReadStream(THIS.avgLogFile).pipe(fs.createWriteStream(copyLogsTo+THIS.options.avgLog));
                     }
                 });
         }
@@ -107,12 +108,24 @@ var opt_llv_qa = {
     label:"LLV QA"
 };
 
+var opt_slr_p = {
+    har:'slr_p_har.json',
+    log:'slr_p_log.json',
+    avgLog:'slr_p_avg_log.json',
+    stdOut:true,
+    label:"SLR PR"
+};
 
 
 //Run LLV Production
 new PerformanceTest(opt_llv_p);
 setInterval(function() { new PerformanceTest(opt_llv_p); }, 1000 * 60 * 30 );
 
+//Run SLR Production
+setTimeout(function() {
+      new PerformanceTest(opt_slr_p);
+      setInterval(function() { new PerformanceTest(opt_slr_p); }, 1000 * 60 * 30 );
+}, 1000 * 60 * 5);
 
 //Run LLV Webqa
 // 10 minutes after runing last sequence, start running qa
