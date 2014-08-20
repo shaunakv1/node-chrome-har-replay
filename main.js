@@ -4,7 +4,7 @@ var fs = require('fs');
 var async = require('async');
 var urlParser = require('url');
 
-var copyLogsTo = null;//"L:/httpd/apps/ads/llv-network-performance/"; //mark as null if copying is not needed
+var copyLogsTo = "L:/httpd/apps/ads/llv-network-performance/logs/"; //mark as null if copying is not needed
 
 function PerformanceTest(options){
     this.har = require('./har/'+ options.har);
@@ -68,7 +68,7 @@ PerformanceTest.prototype.doneRequest = function (end){
                     THIS.count = 0;
                     THIS.counterCheck = 0;
                     THIS.successRequests =0;
-                    if(copyLogsTo) fs.createReadStream(THIS.logFile).pipe(fs.createWriteStream(copyLogsTo+'log.json'));
+                    if(copyLogsTo) fs.createReadStream(THIS.logFile).pipe(fs.createWriteStream(copyLogsTo+THIS.logFile));
                 }
             });
 

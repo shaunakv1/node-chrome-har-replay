@@ -1,9 +1,8 @@
 # Logs
-logs
 *.log
 
-log.json
-avg_log.json
+*log.json
+*log.json
 
 # Runtime data
 pids
