@@ -2,6 +2,9 @@
 logs
 *.log
 
+log.json
+avg_log.json
+
 # Runtime data
 pids
 *.pid
