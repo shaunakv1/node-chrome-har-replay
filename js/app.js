@@ -1,4 +1,5 @@
 $(function () {
+        $('#chart').height($("body").height() - 200);
         $.when(
             $.getJSON('logs/llv_p_log.json'),
             $.getJSON('logs/llv_p_avg_log.json'),

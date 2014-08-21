@@ -134,17 +134,17 @@ var opt_slr_p = {
 
 //Run LLV Production
 new PerformanceTest(opt_llv_p);
-setInterval(function() { new PerformanceTest(opt_llv_p); }, 1000 * 60 * 30 );
+setInterval(function() { new PerformanceTest(opt_llv_p); }, 1000 * 60 * 2 );
 
 //Run SLR Production
 setTimeout(function() {
       new PerformanceTest(opt_slr_p);
-      setInterval(function() { new PerformanceTest(opt_slr_p); }, 1000 * 60 * 30 );
+      setInterval(function() { new PerformanceTest(opt_slr_p); }, 1000 * 60 * 2 );
 }, 1000 * 60 * 1);
 
 //Run LLV Webqa
 //10 minutes after runing last sequence, start running qa
 setTimeout(function() {
       new PerformanceTest(opt_llv_qa);
-      setInterval(function() { new PerformanceTest(opt_llv_qa); }, 1000 * 60 * 30 );
+      setInterval(function() { new PerformanceTest(opt_llv_qa); }, 1000 * 60 * 2 );
 }, 1000 * 60 * 10);
