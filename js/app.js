@@ -55,9 +55,9 @@ $(function () {
                    yAxis: {
                        title: {
                            text: 'Total Response Time (secs)'
-                       },
+                       }/*,
                        min: 0,
-                       max: 3000
+                       max: 30000*/
 
                    },
                    /*tooltip: {

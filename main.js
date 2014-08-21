@@ -4,7 +4,7 @@ var fs = require('fs');
 var async = require('async');
 var urlParser = require('url');
 
-var copyLogsTo = "L:/httpd/apps/ads/llv-network-performance/logs/"; //mark as null if copying is not needed
+var copyLogsTo = null;//"L:/httpd/apps/ads/llv-network-performance/logs/"; //mark as null if copying is not needed
 
 function PerformanceTest(options){
     this.options = options;
@@ -22,6 +22,7 @@ function PerformanceTest(options){
     this.startTime = "";
     var THIS = this;
     function runTest(){
+        setup();
         THIS.startTime = moment().format('MMM Do YY, h:mm:ss a');
         async.each(THIS.har.log.entries.reverse(),function(e) {
             if(e.request.url.match('noaa.gov')){
@@ -46,6 +47,18 @@ function PerformanceTest(options){
         });
     }
 
+    function setup () {
+        // if log files donot exist, create them
+        if(!fs.existsSync(THIS.logFile)){
+            console.log(THIS.logFile + ' does not exist. creating it now..');
+            fs.writeFileSync(THIS.logFile, '[]');
+        }
+
+        if(!fs.existsSync(THIS.avgLogFile)){
+            console.log(THIS.avgLogFile + ' does not exist. creating it now..');
+            fs.writeFileSync(THIS.avgLogFile, '[]');
+        }
+    }
     runTest();
 }
 
@@ -88,6 +101,8 @@ PerformanceTest.prototype.doneRequest = function (end){
 
 };
 
+
+
 /**
  * Run for LLV Production
  */
@@ -125,10 +140,10 @@ setInterval(function() { new PerformanceTest(opt_llv_p); }, 1000 * 60 * 30 );
 setTimeout(function() {
       new PerformanceTest(opt_slr_p);
       setInterval(function() { new PerformanceTest(opt_slr_p); }, 1000 * 60 * 30 );
-}, 1000 * 60 * 5);
+}, 1000 * 60 * 1);
 
 //Run LLV Webqa
-// 10 minutes after runing last sequence, start running qa
+//10 minutes after runing last sequence, start running qa
 setTimeout(function() {
       new PerformanceTest(opt_llv_qa);
       setInterval(function() { new PerformanceTest(opt_llv_qa); }, 1000 * 60 * 30 );
