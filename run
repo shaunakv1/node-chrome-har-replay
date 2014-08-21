@@ -1,1 +1,1 @@
-forever start -l ./log/forever.log -o ./log/stdout.log -e ./log/stderr.log main.js
+forever start -l forever.log -o stdout.log -e stderr.log main.js
