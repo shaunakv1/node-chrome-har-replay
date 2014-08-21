@@ -2,7 +2,6 @@
   "name": "node-chrome-har-replay",
   "subdomain": "llv-performance",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
     "start": "node static_server.js"
   },
   "version": "0.0.0",
