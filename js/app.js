@@ -1,4 +1,10 @@
 $(function () {
+        Highcharts.setOptions({
+            global: {
+                useUTC: false
+            }
+        });
+
         $('#chart').height($("body").height() - 200);
         $.when(
             $.getJSON('logs/llv_p_log.json'),
@@ -12,7 +18,7 @@ $(function () {
               avg = avg[0];
 
               llvQaLog = llvQaLog[0];
-              llvQaAvgLog = llvQaAvgLog [0];
+              llvQaAvgLog = _.map(llvQaAvgLog[0],function(v){ return [v[0],v[1]+100]; }); // offset slr average by 200 so it is visible
 
               slrLog = slrLog[0];
               slrAvg = _.map(slrAvg[0],function(v){ return [v[0],v[1]+200]; }); // offset slr average by 200 so it is visible
@@ -54,8 +60,8 @@ $(function () {
                       min: log[0][0],
                       max: log[log.length -1 ][0],
                       dateTimeLabelFormats : {
-                              hour: '%I %p',
-                              minute: '%I:%M %p'
+                              hour: '%I:%M %p',
+                              minute: '%i:%M %p'
                         }
                    },
                    yAxis: {
@@ -66,26 +72,25 @@ $(function () {
                        /*max: 25000*/
 
                    },
-                   /*tooltip: {
-                       headerFormat: '<b>{series.name}</b><br>',
-                       pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
-                   },*/
 
                    series: [{
                        name: 'LLV Total Time',
-                       data: log
+                       data: log,
+                       visible:false
                    },{
                        name: 'LLV Average Time',
                        data: avg
                    },{
                        name: 'SLR Total Time',
-                       data: slrLog
+                       data: slrLog,
+                       visible:false
                    },{
                        name: 'SLR Average Time',
                        data: slrAvg
                    },{
                        name: 'LLV QA Total Time',
-                       data: llvQaLog
+                       data: llvQaLog,
+                       visible:false
                    },{
                        name: 'LLV QA Average Time',
                        data: llvQaAvgLog
