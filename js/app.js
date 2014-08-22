@@ -4,15 +4,20 @@ $(function () {
             $.getJSON('logs/llv_p_log.json'),
             $.getJSON('logs/llv_p_avg_log.json'),
             $.getJSON('logs/slr_p_log.json'),
-            $.getJSON('logs/slr_p_avg_log.json')
-        ).then(function(log, avg, slrLog, slrAvg) {
+            $.getJSON('logs/slr_p_avg_log.json'),
+            $.getJSON('logs/llv_qa_log.json'),
+            $.getJSON('logs/llv_qa_avg_log.json')
+        ).then(function(log, avg, llvQaLog, llvQaAvgLog ,slrLog, slrAvg) {
               log = log[0];
               avg = avg[0];
+
+              llvQaLog = llvQaLog[0];
+              llvQaAvgLog = llvQaAvgLog [0];
 
               slrLog = slrLog[0];
               slrAvg = _.map(slrAvg[0],function(v){ return [v[0],v[1]+200]; }); // offset slr average by 200 so it is visible
 
-               [log, avg, slrLog, slrAvg].forEach(function(arr){
+               [log, avg, slrLog, slrAvg,llvQaLog,llvQaAvgLog].forEach(function(arr){
                     arr.forEach(function (v) {
                         v[0] = Date.parse(v[0]);
                     });
@@ -78,6 +83,12 @@ $(function () {
                    },{
                        name: 'SLR Average Time',
                        data: slrAvg
+                   },{
+                       name: 'LLV QA Total Time',
+                       data: llvQaLog
+                   },{
+                       name: 'LLV QA Average Time',
+                       data: llvQaAvgLog
                    }]
                });
         });
