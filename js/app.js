@@ -42,6 +42,24 @@ $(function () {
                        type: 'spline',
                        zoomType: 'x'
                    },
+                   rangeSelector: {
+                    buttons: [{
+                      type: 'day',
+                      count: 1,
+                      text: '1 day'
+                    },{
+                      type: 'week',
+                      count: 1,
+                      text: '1 wk'
+                    },{
+                      type: 'month',
+                      count: 1,
+                      text: '1m'
+                    },{
+                      type: 'all',
+                      text: 'All'
+                    }]
+                   },
                    legend: {
                         enabled: true,
                    },
