@@ -25,7 +25,7 @@ function PerformanceTest(options){
         setup();
         THIS.startTime = moment().format('MMM Do YY, h:mm:ss a');
         async.each(THIS.har.log.entries.reverse(),function(e) {
-            if(e.request.url.match('noaa.gov')){
+            if(e.request.url.match('noaa.gov') || e.request.url.match('arcgis.com')){
                     THIS.counterCheck = THIS.counterCheck + 1;
                     THIS.totalRequests = THIS.totalRequests + 1;
                     var url = e.request.url;//urlParser.parse(e.request.url);
@@ -123,6 +123,14 @@ var opt_llv_qa = {
     label:"LLV QA"
 };
 
+var opt_llv_agol = {
+    har:'llv_agol_har.json',
+    log:'llv_agol_log.json',
+    avgLog:'llv_agol_avg_log.json',
+    stdOut:true,
+    label:"LLV AGOL"
+};
+
 var opt_slr_p = {
     har:'slr_p_har.json',
     log:'slr_p_log.json',
@@ -133,18 +141,25 @@ var opt_slr_p = {
 
 
 //Run LLV Production
-new PerformanceTest(opt_llv_p);
-setInterval(function() { new PerformanceTest(opt_llv_p); }, 1000 * 60 * 5 );
+setInterval(function() { new PerformanceTest(opt_llv_p); }, 1000 * 60 * 15 );
 
 //Run SLR Production
 setTimeout(function() {
       new PerformanceTest(opt_slr_p);
-      setInterval(function() { new PerformanceTest(opt_slr_p); }, 1000 * 60 * 5 );
+      setInterval(function() { new PerformanceTest(opt_slr_p); }, 1000 * 60 * 15 );
 }, 1000 * 60 * 5);
 
 //Run LLV Webqa
 //10 minutes after runing last sequence, start running qa
 setTimeout(function() {
       new PerformanceTest(opt_llv_qa);
-      setInterval(function() { new PerformanceTest(opt_llv_qa); }, 1000 * 60 * 5 );
+      setInterval(function() { new PerformanceTest(opt_llv_qa); }, 1000 * 60 * 15 );
 }, 1000 * 60 * 10);
+
+//Run LLV AGOL
+//15 minutes after runing last sequence, start running qa
+new PerformanceTest(opt_llv_agol);
+setTimeout(function() {
+      new PerformanceTest(opt_llv_agol);
+      setInterval(function() { new PerformanceTest(opt_llv_agol); }, 1000 * 60 * 15 );
+}, 1000 * 60 * 15);
