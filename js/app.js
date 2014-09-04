@@ -13,8 +13,10 @@ $(function () {
             $.getJSON('logs/slr_p_avg_log.json'),
             $.getJSON('logs/llv_qa_log.json'),
             $.getJSON('logs/llv_qa_avg_log.json'),
+            $.getJSON('logs/llv_agol_log.json'),
+            $.getJSON('logs/llv_agol_avg_log.json'),
             $.get('logs/san1-dmz-latency.log')
-        ).then(function(log, avg, llvQaLog, llvQaAvgLog ,slrLog, slrAvg, dmzLatencyLog) {
+        ).then(function(log, avg, llvQaLog, llvQaAvgLog ,slrLog, slrAvg,llvAgolLog,llvAgolAvgLog, dmzLatencyLog) {
 
               dmzLog = parseDmzLogs(dmzLatencyLog[0]);
 
@@ -31,7 +33,10 @@ $(function () {
               slrLog = slrLog[0];
               slrAvg = _.map(slrAvg[0],function(v){ return [v[0],v[1]+200]; }); // offset slr average by 200 so it is visible
 
-               [dmzReadsLog, dmzWritesLog, dmzLatencyLog,log, avg, slrLog, slrAvg,llvQaLog,llvQaAvgLog].forEach(function(arr){
+              llvAgolLog = llvAgolLog[0];
+              llvAgolAvgLog = _.map(llvAgolAvgLog[0],function(v){ return [v[0],v[1]+300]; }); // offset slr average by 300 so it is visible
+
+               [dmzReadsLog, dmzWritesLog, dmzLatencyLog,log, avg, slrLog, slrAvg,llvQaLog,llvQaAvgLog,llvAgolLog,llvAgolAvgLog].forEach(function(arr){
                     arr.forEach(function (v) {
                         v[0] = Date.parse(v[0]);
                     });
@@ -135,6 +140,13 @@ $(function () {
                    },{
                        name: 'LLV QA Average Time',
                        data: llvQaAvgLog
+                   },{
+                       name: 'LLV AGOL Total Time',
+                       data: llvAgolLog,
+                       visible:false
+                   },{
+                       name: 'LLV AGOL Average Time',
+                       data: llvAgolAvgLog
                    },{
                       name: 'DMZ Latency',
                       data: dmzLatencyLog,
