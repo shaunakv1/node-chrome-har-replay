@@ -18,7 +18,7 @@ $(function () {
             $.get('logs/san1-dmz-latency.log')
         ).then(function(log, avg, llvQaLog, llvQaAvgLog ,slrLog, slrAvg,llvAgolLog,llvAgolAvgLog, dmzLatencyLog) {
 
-              dmzLog = parseDmzLogs(dmzLatencyLog[0]);
+              dmzLog = parseDmzLogs(dmzLatencyLog[0],2.5);//number of weeks to parse out
 
               dmzReadsLog = dmzLog[0];
               dmzWritesLog = dmzLog[1];
@@ -168,11 +168,20 @@ $(function () {
         });
 });
 
-function parseDmzLogs(log){
+function parseDmzLogs(log,weeks){
   log = JSON.parse("["+ log.trim().slice(0, - 1) + "]");
-  logLatency = log.map(function(val){ return [val[0],val[3]];});
-  logReads = log.map(function(val){ return [val[0],val[1]];});
-  logWrites = log.map(function(val){ return [val[0],val[2]];});
+
+  var currentDate = new Date();
+  var checkDate = new Date(currentDate.setDate(currentDate.getDate() - weeks * 7 ));
+
+  var filteredLog = _.reject(log, function(entry){
+    var entryDate = new Date(Date.parse(entry[0]));
+      return entryDate < checkDate;
+  });
+
+  logLatency = filteredLog.map(function(val){ return [val[0],val[3]];});
+  logReads = filteredLog.map(function(val){ return [val[0],val[1]];});
+  logWrites = filteredLog.map(function(val){ return [val[0],val[2]];});
 
   return [logReads,logWrites,logLatency];
 }
