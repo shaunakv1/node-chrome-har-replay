@@ -1,8 +1,10 @@
+var notifications = require('./lib/notifications.js');
 var request = require('request');
 var moment = require('moment');
 var fs = require('fs');
 var async = require('async');
 var urlParser = require('url');
+var Datastore = require('nedb');
 
 var copyLogsTo = null;//"L:/httpd/apps/ads/llv-network-performance/logs/"; //mark as null if copying is not needed
 
@@ -21,45 +23,50 @@ function PerformanceTest(options){
     this.successRequests = 0;
     this.startTime = "";
     var THIS = this;
-    function runTest(){
-        setup();
-        THIS.startTime = moment().format('MMM Do YY, h:mm:ss a');
-        async.each(THIS.har.log.entries.reverse(),function(e) {
-            if(e.request.url.match('noaa.gov') || e.request.url.match('arcgis.com')){
-                    THIS.counterCheck = THIS.counterCheck + 1;
-                    THIS.totalRequests = THIS.totalRequests + 1;
-                    var url = e.request.url;//urlParser.parse(e.request.url);
-                    var start = new Date();
 
-                    request(url, function(error,res) {
-                        if(res.statusCode == 200)  THIS.successRequests =  THIS.successRequests + 1;
-                        /*console.log('start : '+ start);
-                        console.log('end   : '+ new Date());*/
-                        var end = (new Date() - start)/1000.00;
-                        //console.log('time  : '+ end , 's');
-                        //console.log('-----------------------------------------------');
-                        THIS.doneRequest(end);
-                    });
-                }
-        }, function (err) {
-            console.log('error..');
-            console.log(err);
+
+    function initializeTest(onDBInitialized) {
+        // Initialize the Flat File Database
+        PerformanceDB = new Datastore({ filename: 'db/performance-logs.json', autoload: true });
+
+        //report database loaded
+        PerformanceDB.loadDatabase(function (err) {
+            onDBInitialized =onDBInitialized || function () {};
+            onDBInitialized(err,PerformanceDB);
         });
     }
 
-    function setup () {
-        // if log files donot exist, create them
-        if(!fs.existsSync(THIS.logFile)){
-            console.log(THIS.logFile + ' does not exist. creating it now..');
-            fs.writeFileSync(THIS.logFile, '[]');
+    initializeTest(function (err,PerformanceDB) {
+        if(!err){
+             console.log("Database Initialized Successfully");
+            // THIS.startTime = moment().format('MMM Do YY, h:mm:ss a');
+            // async.each(THIS.har.log.entries.reverse(),function(e) {
+            //    if(e.request.url.match('noaa.gov') || e.request.url.match('arcgis.com')){
+            //            THIS.counterCheck = THIS.counterCheck + 1;
+            //            THIS.totalRequests = THIS.totalRequests + 1;
+            //            var url = e.request.url;//urlParser.parse(e.request.url);
+            //            var start = new Date();
+
+            //            request(url, function(error,res) {
+            //                if(res.statusCode == 200)  THIS.successRequests =  THIS.successRequests + 1;
+            //                /*console.log('start : '+ start);
+            //                console.log('end   : '+ new Date());*/
+            //                var end = (new Date() - start)/1000.00;
+            //                //console.log('time  : '+ end , 's');
+            //                //console.log('-----------------------------------------------');
+            //                THIS.doneRequest(end);
+            //            });
+            //        }
+            // }, function (err) {
+            //    console.log('error..');
+            //    console.log(err);
+            // });
+        }
+        else{
+            notifications.error(err);
         }
 
-        if(!fs.existsSync(THIS.avgLogFile)){
-            console.log(THIS.avgLogFile + ' does not exist. creating it now..');
-            fs.writeFileSync(THIS.avgLogFile, '[]');
-        }
-    }
-    runTest();
+    });//end intialize test
 }
 
 PerformanceTest.prototype.doneRequest = function (end){
