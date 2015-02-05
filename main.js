@@ -1,125 +1,52 @@
-var notifications = require('./lib/notifications.js');
-var request = require('request');
-var moment = require('moment');
-var fs = require('fs');
-var async = require('async');
-var urlParser = require('url');
-var Datastore = require('nedb');
+var db = require('./lib/database.js');
+var test = require('./lib/performanceTest.js');
+var queue = require('./lib/testQueue.js');
 
-var copyLogsTo = null;//"L:/httpd/apps/ads/llv-network-performance/logs/"; //mark as null if copying is not needed
+/**
+ * Start by initializing the database, then in the call back keep running
+ * the preformance test on different profiles
+ */
+db.initialize(function (err,performanceDB) {
+    if(!err){
+        console.log("Database Initialized Successfully");
+        /**
+         * Start Testing here..
+         */
+         queue.setQueueTimeDelay(2000);
 
-function PerformanceTest(options){
-    this.options = options;
-    this.har = require('./har/'+ options.har);
-    this.logFile = './logs/'+ options.log;
-    this.avgLogFile = './logs/'+ options.avgLog;
-    this.label =   options.label;
-    this.stdOut = options.stdOut;
-
-    this.totalTime = 0;
-    this.count = 0;
-    this.counterCheck = 0;
-    this.totalRequests = 0;
-    this.successRequests = 0;
-    this.startTime = "";
-    var THIS = this;
-
-
-    function initializeTest(onDBInitialized) {
-        // Initialize the Flat File Database
-        PerformanceDB = new Datastore({ filename: 'db/performance-logs.json', autoload: true });
-
-        //report database loaded
-        PerformanceDB.loadDatabase(function (err) {
-            onDBInitialized =onDBInitialized || function () {};
-            //onDBInitialized(err,PerformanceDB);
-        });
-
-        /*PerformanceDB.find({ profile: 'llv_agol_har.json' }, function (err, profiles) {
-          console.log(profiles.map(function (p) {
-              return [p.timestamp.toISOString(), p.avg];
-          }));
-        });*/
+         var index = 0;
+         queue.addJob(
+            function(){ new test.PerformanceTest(llv_p)
+         });
+         queue.addJob(function(){
+            new test.PerformanceTest(llv_agol);
+         });
+         queue.addJob(function(){
+            new test.PerformanceTest(slr_p);
+         });
+         queue.addJob(function(){
+            new test.PerformanceTest(llv_qa);
+         });
     }
-
-    initializeTest(function (err,PerformanceDB) {
-        if(!err){
-            console.log("Database Initialized Successfully");
-            THIS.startTime = moment().format('MMM Do YY, h:mm:ss a');
-            async.each(THIS.har.log.entries.reverse(),function(e) {
-               if(e.request.url.match('noaa.gov') || e.request.url.match('arcgis.com')){
-                       THIS.counterCheck = THIS.counterCheck + 1;
-                       THIS.totalRequests = THIS.totalRequests + 1;
-                       var url = e.request.url;//urlParser.parse(e.request.url);
-                       var start = new Date();
-                       console.log("request: ", url);
-                       request(url, function(err,res) {
-                           if(res && res.statusCode == 200){
-                            THIS.successRequests =  THIS.successRequests + 1;
-                            console.log('start : '+ start);
-                            console.log('end   : '+ new Date());
-                            var end = (new Date() - start)/1000.00;
-                            console.log('time  : '+ end , 's');
-                            console.log('-----------------------------------------------');
-                            THIS.logRequestTimes(end,PerformanceDB); 
-                           }
-                           else{
-                            console.log(err);
-                            console.log(res);
-                           }
-                           
-                       });
-                   }
-            }, function (err) {
-               console.log('error..');
-               console.log(err);
-            });
-        }
-        else{
-            notifications.error(err);
-        }
-
-    });//end intialize test
-}
-
-PerformanceTest.prototype.logRequestTimes = function (end,PerformanceDB){
-    var THIS = this;
-    THIS.totalTime = THIS.totalTime + end;
-    THIS.count = THIS.count + 1;
-    if(THIS.count >= THIS.counterCheck){
-        if(THIS.stdOut) process.stdout.write("\n"+THIS.label +' :---> '+ THIS.startTime +' :---> ');
-        if(THIS.stdOut)  console.log(" time: "+ THIS.totalTime+"s  (req: "+THIS.successRequests+"/"+THIS.totalRequests+")");
-
-        var time = new Date();
-        var log = {
-            profile: THIS.options.har,
-            label: THIS.label,
-            timestamp: time,
-            avg: THIS.totalTime/THIS.totalRequests,
-            total: THIS.totalTime
-        }
-
-        PerformanceDB.insert(log, function (err, newDoc) {   // Callback is optional
-            if(THIS.stdOut) console.log("Log Written");
-        });    
+    else{
+        notifications.error(err);
     }
-};
-
+});
 
 
 /**
- * Run for LLV Production
+ * Profiles: Will need refactoring to exttract these into a more managable place
  */
 
-var opt_llv_p = {
+var llv_p = {
     har:'llv_p_har.json',
     log:'llv_p_log.json',
     avgLog:'llv_p_avg_log.json',
     stdOut:true,
-    label:"LLV AGOL"
+    label:"LLV P"
 };
 
-var opt_llv_agol = {
+var llv_agol = {
     har:'llv_agol_har.json',
     log:'llv_agol_log.json',
     avgLog:'llv_agol_avg_log.json',
@@ -127,18 +54,9 @@ var opt_llv_agol = {
     label:"LLV AGOL"
 };
 
-//new PerformanceTest(opt_llv_p);
-
-new PerformanceTest(opt_llv_agol);
-//new PerformanceTest(opt_llv_agol);
-//new PerformanceTest(opt_llv_agol);
-//new PerformanceTest(opt_llv_agol);
-//new PerformanceTest(opt_llv_agol);
 
 
-
-/*
-var opt_llv_qa = {
+var llv_qa = {
     har:'llv_qa_har.json',
     log:'llv_qa_log.json',
     avgLog:'llv_qa_avg_log.json',
@@ -146,22 +64,15 @@ var opt_llv_qa = {
     label:"LLV QA"
 };
 
-var opt_llv_agol = {
-    har:'llv_agol_har.json',
-    log:'llv_agol_log.json',
-    avgLog:'llv_agol_avg_log.json',
-    stdOut:true,
-    label:"LLV AGOL"
-};
 
-var opt_slr_p = {
+var slr_p = {
     har:'slr_p_har.json',
     log:'slr_p_log.json',
     avgLog:'slr_p_avg_log.json',
     stdOut:true,
     label:"SLR PR"
 };
-*/
+
 
 
 /*
