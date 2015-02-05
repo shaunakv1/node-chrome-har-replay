@@ -32,35 +32,48 @@ function PerformanceTest(options){
         //report database loaded
         PerformanceDB.loadDatabase(function (err) {
             onDBInitialized =onDBInitialized || function () {};
-            onDBInitialized(err,PerformanceDB);
+            //onDBInitialized(err,PerformanceDB);
         });
+
+        /*PerformanceDB.find({ profile: 'llv_agol_har.json' }, function (err, profiles) {
+          console.log(profiles.map(function (p) {
+              return [p.timestamp.toISOString(), p.avg];
+          }));
+        });*/
     }
 
     initializeTest(function (err,PerformanceDB) {
         if(!err){
-             console.log("Database Initialized Successfully");
-            // THIS.startTime = moment().format('MMM Do YY, h:mm:ss a');
-            // async.each(THIS.har.log.entries.reverse(),function(e) {
-            //    if(e.request.url.match('noaa.gov') || e.request.url.match('arcgis.com')){
-            //            THIS.counterCheck = THIS.counterCheck + 1;
-            //            THIS.totalRequests = THIS.totalRequests + 1;
-            //            var url = e.request.url;//urlParser.parse(e.request.url);
-            //            var start = new Date();
-
-            //            request(url, function(error,res) {
-            //                if(res.statusCode == 200)  THIS.successRequests =  THIS.successRequests + 1;
-            //                /*console.log('start : '+ start);
-            //                console.log('end   : '+ new Date());*/
-            //                var end = (new Date() - start)/1000.00;
-            //                //console.log('time  : '+ end , 's');
-            //                //console.log('-----------------------------------------------');
-            //                THIS.doneRequest(end);
-            //            });
-            //        }
-            // }, function (err) {
-            //    console.log('error..');
-            //    console.log(err);
-            // });
+            console.log("Database Initialized Successfully");
+            THIS.startTime = moment().format('MMM Do YY, h:mm:ss a');
+            async.each(THIS.har.log.entries.reverse(),function(e) {
+               if(e.request.url.match('noaa.gov') || e.request.url.match('arcgis.com')){
+                       THIS.counterCheck = THIS.counterCheck + 1;
+                       THIS.totalRequests = THIS.totalRequests + 1;
+                       var url = e.request.url;//urlParser.parse(e.request.url);
+                       var start = new Date();
+                       console.log("request: ", url);
+                       request(url, function(err,res) {
+                           if(res && res.statusCode == 200){
+                            THIS.successRequests =  THIS.successRequests + 1;
+                            console.log('start : '+ start);
+                            console.log('end   : '+ new Date());
+                            var end = (new Date() - start)/1000.00;
+                            console.log('time  : '+ end , 's');
+                            console.log('-----------------------------------------------');
+                            THIS.logRequestTimes(end,PerformanceDB); 
+                           }
+                           else{
+                            console.log(err);
+                            console.log(res);
+                           }
+                           
+                       });
+                   }
+            }, function (err) {
+               console.log('error..');
+               console.log(err);
+            });
         }
         else{
             notifications.error(err);
@@ -69,7 +82,7 @@ function PerformanceTest(options){
     });//end intialize test
 }
 
-PerformanceTest.prototype.doneRequest = function (end){
+PerformanceTest.prototype.logRequestTimes = function (end,PerformanceDB){
     var THIS = this;
     THIS.totalTime = THIS.totalTime + end;
     THIS.count = THIS.count + 1;
@@ -77,35 +90,19 @@ PerformanceTest.prototype.doneRequest = function (end){
         if(THIS.stdOut) process.stdout.write("\n"+THIS.label +' :---> '+ THIS.startTime +' :---> ');
         if(THIS.stdOut)  console.log(" time: "+ THIS.totalTime+"s  (req: "+THIS.successRequests+"/"+THIS.totalRequests+")");
 
-        var log = require(THIS.logFile);
         var time = new Date();
-        log.push([time, THIS.totalTime]);
-        fs.writeFile(THIS.logFile, JSON.stringify(log), function(err) {
-                if(err) {
-                    console.log(err);
-                }
-                else{
-                    THIS.totalTime = 0;
-                    THIS.count = 0;
-                    THIS.counterCheck = 0;
-                    THIS.successRequests =0;
-                    if(copyLogsTo) fs.createReadStream(THIS.logFile).pipe(fs.createWriteStream(copyLogsTo+THIS.options.log));
-                }
-            });
-
-            var log = require(THIS.avgLogFile);
-            log.push([time, THIS.totalTime/THIS.totalRequests]);
-            fs.writeFile(THIS.avgLogFile, JSON.stringify(log), function(err) {
-                    if(err) {
-                        console.log(err);
-                    }
-                    else{
-                        THIS.totalRequests = 0;
-                        if(copyLogsTo) fs.createReadStream(THIS.avgLogFile).pipe(fs.createWriteStream(copyLogsTo+THIS.options.avgLog));
-                    }
-                });
+        var log = {
+            profile: THIS.options.har,
+            label: THIS.label,
+            timestamp: time,
+            avg: THIS.totalTime/THIS.totalRequests,
+            total: THIS.totalTime
         }
 
+        PerformanceDB.insert(log, function (err, newDoc) {   // Callback is optional
+            if(THIS.stdOut) console.log("Log Written");
+        });    
+    }
 };
 
 
@@ -119,9 +116,28 @@ var opt_llv_p = {
     log:'llv_p_log.json',
     avgLog:'llv_p_avg_log.json',
     stdOut:true,
-    label:"LLV PR"
+    label:"LLV AGOL"
 };
 
+var opt_llv_agol = {
+    har:'llv_agol_har.json',
+    log:'llv_agol_log.json',
+    avgLog:'llv_agol_avg_log.json',
+    stdOut:true,
+    label:"LLV AGOL"
+};
+
+//new PerformanceTest(opt_llv_p);
+
+new PerformanceTest(opt_llv_agol);
+//new PerformanceTest(opt_llv_agol);
+//new PerformanceTest(opt_llv_agol);
+//new PerformanceTest(opt_llv_agol);
+//new PerformanceTest(opt_llv_agol);
+
+
+
+/*
 var opt_llv_qa = {
     har:'llv_qa_har.json',
     log:'llv_qa_log.json',
@@ -145,8 +161,10 @@ var opt_slr_p = {
     stdOut:true,
     label:"SLR PR"
 };
+*/
 
 
+/*
 //Run LLV Production
 setInterval(function() { new PerformanceTest(opt_llv_p); }, 1000 * 60 * 15 );
 
@@ -170,3 +188,4 @@ setTimeout(function() {
       new PerformanceTest(opt_llv_agol);
       setInterval(function() { new PerformanceTest(opt_llv_agol); }, 1000 * 60 * 15 );
 }, 1000 * 60 * 15);
+*/
