@@ -9,7 +9,8 @@
   "main": "main.js",
   "dependencies": {
     "async": "~0.9.0",
-    "nedb": "^1.1.1"
+    "nedb": "^1.1.1",
+    "worker-farm": "^1.2.0"
   },
   "devDependencies": {
     "async": "~0.9.0",
