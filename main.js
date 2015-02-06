@@ -1,28 +1,4 @@
-var db = require('./lib/database.js');
-var test = require('./lib/performanceTest.js');
 var queue = require('./lib/testQueue.js');
-
-/**
- * Start by initializing the database, then in the call back keep running
- * the preformance test on different profiles
- */
-db.initialize(function (err,performanceDB) {
-    if(!err){
-        console.log("Database Initialized Successfully");
-        /**
-         * Start Testing here..
-         */
-         queue.setQueueTimeDelay(2000);
-         queue.addJob(llv_p);
-         queue.addJob(llv_agol);
-         queue.addJob(slr_p);
-         queue.addJob(llv_qa);
-    }
-    else{
-        notifications.error(err);
-    }
-});
-
 
 /**
  * Profiles: Will need refactoring to exttract these into a more managable place
@@ -33,8 +9,7 @@ var llv_p = {
     log:'llv_p_log.json',
     avgLog:'llv_p_avg_log.json',
     stdOut:true,
-    label:"LLV P",
-    logToDatabase:db
+    label:"LLV P"
 };
 
 var llv_agol = {
@@ -42,8 +17,7 @@ var llv_agol = {
     log:'llv_agol_log.json',
     avgLog:'llv_agol_avg_log.json',
     stdOut:true,
-    label:"LLV AGOL",
-    logToDatabase:db
+    label:"LLV AGOL"
 };
 
 var llv_qa = {
@@ -51,8 +25,7 @@ var llv_qa = {
     log:'llv_qa_log.json',
     avgLog:'llv_qa_avg_log.json',
     stdOut:true,
-    label:"LLV QA",
-    logToDatabase:db
+    label:"LLV QA"
 };
 
 var slr_p = {
@@ -60,6 +33,14 @@ var slr_p = {
     log:'slr_p_log.json',
     avgLog:'slr_p_avg_log.json',
     stdOut:true,
-    label:"SLR PR",
-    logToDatabase:db
+    label:"SLR PR"
 };
+/**
+ * Start Testing here..
+ */
+ queue.setQueueTimeDelay(2000);
+ queue.addJob(llv_p);
+ queue.addJob(llv_agol);
+ queue.addJob(slr_p);
+ queue.addJob(llv_qa);
+
