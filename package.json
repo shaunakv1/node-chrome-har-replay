@@ -10,6 +10,7 @@
   "dependencies": {
     "async": "~0.9.0",
     "nedb": "^1.1.1",
+    "nedb-logger": "^0.1.0",
     "worker-farm": "^1.2.0"
   },
   "devDependencies": {
