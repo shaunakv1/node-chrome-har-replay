@@ -13,20 +13,10 @@ db.initialize(function (err,performanceDB) {
          * Start Testing here..
          */
          queue.setQueueTimeDelay(2000);
-
-         var index = 0;
-         queue.addJob(
-            function(){ new test.PerformanceTest(llv_p)
-         });
-         queue.addJob(function(){
-            new test.PerformanceTest(llv_agol);
-         });
-         queue.addJob(function(){
-            new test.PerformanceTest(slr_p);
-         });
-         queue.addJob(function(){
-            new test.PerformanceTest(llv_qa);
-         });
+         queue.addJob(llv_p);
+         queue.addJob(llv_agol);
+         queue.addJob(slr_p);
+         queue.addJob(llv_qa);
     }
     else{
         notifications.error(err);
@@ -43,7 +33,8 @@ var llv_p = {
     log:'llv_p_log.json',
     avgLog:'llv_p_avg_log.json',
     stdOut:true,
-    label:"LLV P"
+    label:"LLV P"/*,
+    logToDatabase:db*/
 };
 
 var llv_agol = {
@@ -51,26 +42,26 @@ var llv_agol = {
     log:'llv_agol_log.json',
     avgLog:'llv_agol_avg_log.json',
     stdOut:true,
-    label:"LLV AGOL"
+    label:"LLV AGOL"/*,
+    logToDatabase:db*/
 };
-
-
 
 var llv_qa = {
     har:'llv_qa_har.json',
     log:'llv_qa_log.json',
     avgLog:'llv_qa_avg_log.json',
     stdOut:true,
-    label:"LLV QA"
+    label:"LLV QA"/*,
+    logToDatabase:db*/
 };
-
 
 var slr_p = {
     har:'slr_p_har.json',
     log:'slr_p_log.json',
     avgLog:'slr_p_avg_log.json',
     stdOut:true,
-    label:"SLR PR"
+    label:"SLR PR"/*,
+    logToDatabase:db*/
 };
 
 
