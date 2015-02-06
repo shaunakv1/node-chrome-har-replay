@@ -33,8 +33,8 @@ var llv_p = {
     log:'llv_p_log.json',
     avgLog:'llv_p_avg_log.json',
     stdOut:true,
-    label:"LLV P"/*,
-    logToDatabase:db*/
+    label:"LLV P",
+    logToDatabase:db
 };
 
 var llv_agol = {
@@ -42,8 +42,8 @@ var llv_agol = {
     log:'llv_agol_log.json',
     avgLog:'llv_agol_avg_log.json',
     stdOut:true,
-    label:"LLV AGOL"/*,
-    logToDatabase:db*/
+    label:"LLV AGOL",
+    logToDatabase:db
 };
 
 var llv_qa = {
@@ -51,8 +51,8 @@ var llv_qa = {
     log:'llv_qa_log.json',
     avgLog:'llv_qa_avg_log.json',
     stdOut:true,
-    label:"LLV QA"/*,
-    logToDatabase:db*/
+    label:"LLV QA",
+    logToDatabase:db
 };
 
 var slr_p = {
@@ -60,34 +60,6 @@ var slr_p = {
     log:'slr_p_log.json',
     avgLog:'slr_p_avg_log.json',
     stdOut:true,
-    label:"SLR PR"/*,
-    logToDatabase:db*/
+    label:"SLR PR",
+    logToDatabase:db
 };
-
-
-
-/*
-//Run LLV Production
-setInterval(function() { new PerformanceTest(opt_llv_p); }, 1000 * 60 * 15 );
-
-//Run SLR Production
-setTimeout(function() {
-      new PerformanceTest(opt_slr_p);
-      setInterval(function() { new PerformanceTest(opt_slr_p); }, 1000 * 60 * 15 );
-}, 1000 * 60 * 5);
-
-//Run LLV Webqa
-//10 minutes after runing last sequence, start running qa
-setTimeout(function() {
-      new PerformanceTest(opt_llv_qa);
-      setInterval(function() { new PerformanceTest(opt_llv_qa); }, 1000 * 60 * 15 );
-}, 1000 * 60 * 10);
-
-//Run LLV AGOL
-//15 minutes after runing last sequence, start running qa
-new PerformanceTest(opt_llv_agol);
-setTimeout(function() {
-      new PerformanceTest(opt_llv_agol);
-      setInterval(function() { new PerformanceTest(opt_llv_agol); }, 1000 * 60 * 15 );
-}, 1000 * 60 * 15);
-*/
