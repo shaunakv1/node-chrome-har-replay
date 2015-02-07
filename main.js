@@ -1,7 +1,7 @@
 var queue = require('./lib/testQueue.js');
 
 /**
- * Profiles: Will need refactoring to exttract these into a more managable place
+ * Profiles: Will need refactoring to extract these into a more managable place
  */
 
 var llv_p = {
@@ -38,9 +38,14 @@ var slr_p = {
 /**
  * Start Testing here..
  */
+ //queue.setQueueTimeDelay(60 * 1000 * 5);
  queue.setQueueTimeDelay(2000);
  queue.addJob(llv_p);
  queue.addJob(llv_agol);
  queue.addJob(slr_p);
  queue.addJob(llv_qa);
+
+/*setTimeout(function () {
+    console.log(JSON.stringify(queue.getActiveJobs()));
+},3000);*/
 
