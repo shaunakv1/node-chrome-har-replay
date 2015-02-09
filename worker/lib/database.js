@@ -2,7 +2,7 @@
 
 var Datastore = require('nedb');
 var Logger = require('nedb-logger')
-var performanceDBFile = 'db/performance-logs.json';
+var performanceDBFile = '../database/performance-logs.json';
 var performanceDB;
 exports.initialize = function(onDBInitialized,loggingModeOnly) {
     //when in logging mode, use neeb-logger library, so whole DB is not loaded in memory
@@ -12,7 +12,6 @@ exports.initialize = function(onDBInitialized,loggingModeOnly) {
 
             //report database loaded
             performanceDB.loadDatabase(function (err) {
-                console.log("Database Initialized Successfully");
                 onDBInitialized = onDBInitialized || function () {};
                 onDBInitialized(err,performanceDB);
             });

@@ -1,2 +1,2 @@
-worker: node main.js
-web: node static_server.js
+worker: node worker/main.js
+server: node server/server.js
