@@ -24,7 +24,7 @@ app.get('/getPerformanceProfile', function(req, res) {
 
   performanceDB.initialize(function(err,db){
     if(!err){
-      db.find({ profile: p }, function (err, documents) {
+      db.find({ profile: p }).sort({ timestamp: 1 }).exec(function (err, documents) {
         res.jsonp({
             err:err,
             length:documents.length ,
