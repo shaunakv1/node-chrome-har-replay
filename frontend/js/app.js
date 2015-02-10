@@ -1,8 +1,8 @@
 var offset = 0;
+var once = false;
+var chart;
 
 $(function () {
-       var chart = addChart();
-
        //populate Profiles dropdown
        $.when($.getJSON(config.domain+'/getAllProfiles?callback=?')).then(function(profiles){
           profiles.data.forEach(function (profile) {
@@ -11,6 +11,7 @@ $(function () {
        });
 
        $("#addProfile").click(function (evt) {
+          if(!once){ chart = addChart(); once=true};
           addProfile(chart,  $('#profiles').val());
        });
 });
