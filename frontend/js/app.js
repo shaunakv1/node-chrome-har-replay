@@ -4,7 +4,7 @@ $(function () {
        var chart = addChart();
 
        //populate Profiles dropdown
-       $.when($.getJSON('http://localhost:4731/getAllProfiles?callback=?')).then(function(profiles){
+       $.when($.getJSON(config.domain+'/getAllProfiles?callback=?')).then(function(profiles){
           profiles.data.forEach(function (profile) {
             $('#profiles').append("<option val='"+profile+"'>"+profile+"</option>");
           })
@@ -17,7 +17,7 @@ $(function () {
 
 function addProfile(chart, profileID){
   $.when(
-      $.getJSON('http://localhost:4731/getPerformanceProfile?profile='+profileID+'&callback=?')
+      $.getJSON(config.domain+'/getPerformanceProfile?profile='+profileID+'&callback=?')
   ).then(function(log) {
 
         log = log.data.map(function(log){
