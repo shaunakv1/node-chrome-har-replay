@@ -12,6 +12,9 @@ How to use:
 
 Alternatively, is using PM2 , just do `pm2 start pm2-app-runner.json` to fire up worker and server. 
 
+Notes:
+1. Make sure to modify your `frontend\js\urlconf.js` if you are running server.js under different port or behind a web server proxy. 
+
 
 
 
