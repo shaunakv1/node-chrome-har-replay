@@ -1,0 +1,11 @@
+{
+  "apps" : [{
+    "name"        : "performance_worker",
+    "script"      : "main.js",
+    "cwd"         : "./worker"
+  },{
+    "name"       : "performance_server",
+    "script"     : "server.js",
+    "cwd"         : "./server"
+  }]
+}
