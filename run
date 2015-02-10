@@ -1,1 +1,0 @@
-forever start --append -l forever.log -o stdout.log -e stderr.log main.js
