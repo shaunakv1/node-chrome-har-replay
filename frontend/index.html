@@ -1,22 +1,48 @@
 <!DOCTYPE html>
 <html>
-<head>
-	<title>Har Replay- Network Performance</title>
-</head>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Har Replay- Network Pefformance</title>
+
+        <!-- Application CSS file -->
+        <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/darkly/bootstrap.min.css" rel="stylesheet">
+
+        <link rel="stylesheet" href="css/main.css">
+    </head>
 <body>
-	<p>
-		<center>
-			<button id="addProfile">Add Profile</button>
-		</center>
-	</p>
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+	     <div class="container">
+	       <div class="navbar-header">
+	         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+	           <span class="sr-only">Toggle navigation</span>
+	           <span class="icon-bar"></span>
+	           <span class="icon-bar"></span>
+	           <span class="icon-bar"></span>
+	         </button>
+	         <a class="navbar-brand" href="#">Network Perfformance - HAR File Replay</a>
+	       </div>
+			<div id="navbar" class="navbar-collapse collapse">
+			       <form class="navbar-form navbar-right">
+			         <div class="form-group">
+			          	<select id="profiles" class="form-control"></select>
+			         </div>
+			         <button id="addProfile" type="button" class="btn btn-primary">Add Profile</button>
+			       </form>
+			</div><!--/.navbar-collapse -->
+	     </div>
+   </nav>
 
-	<div id="chart" style="width:100%; height:900px"></div>
-
-	<p><center><h4>*Click on legend items to turn on/off the Series</h4></center></p>
+   <div class="container">
+  	 	<div class="row starter-template">
+  	 		<div id="chart" style="width:100%; height:900px"></div>
+  	 	</div>
+ 	</div><!-- /.container -->
 	<!-- <h3>330 Requests (approx), size: 2.5mb (approx)</h3>
 	<div id="table" style="width:100%; height:800px"></div> -->
 
 	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
 	<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
 	<script src="http://code.highcharts.com/stock/highstock.js"></script>
 	<script src="js/highcharts-dark.js"></script>

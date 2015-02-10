@@ -1,7 +1,17 @@
+var offset = 0;
+
 $(function () {
        var chart = addChart();
+
+       //populate Profiles dropdown
+       $.when($.getJSON('http://localhost:4731/getAllProfiles?callback=?')).then(function(profiles){
+          profiles.data.forEach(function (profile) {
+            $('#profiles').append("<option val='"+profile+"'>"+profile+"</option>");
+          })
+       });
+
        $("#addProfile").click(function (evt) {
-          addProfile(chart, 'llv_agol_har.json');
+          addProfile(chart,  $('#profiles').val());
        });
 });
 
@@ -9,9 +19,13 @@ function addProfile(chart, profileID){
   $.when(
       $.getJSON('http://localhost:4731/getPerformanceProfile?profile='+profileID+'&callback=?')
   ).then(function(log) {
+
         log = log.data.map(function(log){
-          return [Date.parse(log.timestamp), log.avg];
+          // parse date, and offset values to series is visible
+          return [Date.parse(log.timestamp), log.avg + (offset)];
         });
+
+        offset = offset + 2;
 
         chart.addSeries({
           data:log,
@@ -30,7 +44,7 @@ function addChart(){
       }
   });
 
-  $('#chart').height($("body").height() - 200);
+  $('#chart').height($("body").height() - $("nav").height() - 80);
   $('#chart').highcharts('StockChart',{
       chart: {
           type: 'spline',
@@ -71,10 +85,10 @@ function addChart(){
           }
       },
       title: {
-          text: 'LLV Map Services Network Performance'
+          text: null
       },
       subtitle: {
-          text: 'ArcGIS Cache services'
+          text: null
       },
       xAxis: {
           type: 'datetime',
@@ -108,7 +122,10 @@ function addChart(){
                  opposite: true
                }],
 
-      series: []
+      series: [],
+      credits: {
+                enabled: false
+            }
   });
 
   return $('#chart').highcharts();
