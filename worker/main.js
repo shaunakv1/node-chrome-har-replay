@@ -41,13 +41,13 @@ function startPerformanceTester(){
     //queue again every 1 hour
     testRunnerDeamon = setInterval(function () {
         queueAllProfiles();
-    },1000 * 60 * 1); // 5 min
+    },1000 * 60 * 30); // 30 min
 }
 
 function queueAllProfiles(){
     console.log('Queuing up all available profiles');
     //1 mins delay between running each profiles
-    //queue.setQueueTimeDelay(1000 * 60 * 1);
+    queue.setQueueTimeDelay(1000 * 60 * 5);
     profilesArray.forEach(function(profile){
         queue.addJob(profile);
     });
