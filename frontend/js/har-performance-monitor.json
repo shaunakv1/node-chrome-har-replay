@@ -1,0 +1,18 @@
+[
+    "js/lib/jquery.min.js",
+    "js/lib/bootstrap.min.js",
+    "js/lib/accessifyhtml5.min.js",
+    "js/lib/underscore-min.js",
+    "js/lib/highstock.js",
+    "js/lib/angular/angular.js",
+    "js/lib/angular/angular-route.js",
+    
+    "js/app/services.js",
+    "js/app/controllers.js",
+    "js/app/filters.js",
+    "js/app/directives.js",
+    "js/app/app.js",
+    "js/app/highcharts-dark.js",
+    "js/app/config.js",
+    "js/app/ui.js"
+]

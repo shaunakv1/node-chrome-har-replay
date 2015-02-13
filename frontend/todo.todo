@@ -1,0 +1,28 @@
+todo.todo
+
+
+
+
+Done
+Add underscore js
+Add docs docs/index.html and project.json
+Add browser mapping for concatenated js file.
+All libraries have been updated.
+
+
+
+Not Done
+Add README for building workflow
+
+Implement full grunting.
+
+Update node modules in project.json
+
+Add bower.
+Update anuglar to latest stable < will handle this bower
+Remove languages folder < will be handled by bower?  or remove after with grunt task
+update underscore < use bower
+
+Add state/county drop down directive
+
+Update zip file on webqa
