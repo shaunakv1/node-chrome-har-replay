@@ -1,51 +1,45 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>Har Replay- Network Pefformance</title>
 
-        <!-- Application CSS file -->
-        <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/darkly/bootstrap.min.css" rel="stylesheet">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Har Peformance Monitor</title>
 
-        <link rel="stylesheet" href="css/har-performance-monitor.min.css?rel=1423843001738">
-    </head>
-<body>
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-	     <div class="container">
-	       <div class="navbar-header">
-	         <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	           <span class="sr-only">Toggle navigation</span>
-	           <span class="icon-bar"></span>
-	           <span class="icon-bar"></span>
-	           <span class="icon-bar"></span>
-	         </button>
-	         <a class="navbar-brand" href="#">Network Perfformance - HAR File Replay</a>
-	       </div>
-			<div id="navbar" class="navbar-collapse collapse">
-			       <form class="navbar-form navbar-right">
-			         <div class="form-group">
-			          	<select id="profiles" class="form-control"></select>
-			         </div>
-			         <button id="addProfile" type="button" class="btn btn-primary">Add Profile</button>
-			       </form>
-			</div><!--/.navbar-collapse -->
-	     </div>
-   </nav>
+    <!-- Application CSS file -->
+    <link href="//maxcdn.bootstrapcdn.com/bootswatch/3.2.0/darkly/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/har-performance-monitor.min.css?rel=1423845505389">
+</head>
 
-   <div class="container">
-  	 	<div class="row starter-template">
-  	 		<div id="chart" style="width:100%; height:900px">
-  	 			<div class="jumbotron">
-				     <!-- <h2>HAR File Performance Monitor</h2> -->
-				     <p>Start by selecting one of the profiles available on server, and cick 'Add Profile', to see how the HAR file is performing over time.</p>
-		     	</div>
-  	 		</div>
-  	 	</div>
- 	</div><!-- /.container -->
-	<!-- <h3>330 Requests (approx), size: 2.5mb (approx)</h3>
-	<div id="table" style="width:100%; height:800px"></div> -->
+<body ng-app="harPerformanceMonitor">
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">Har Peformance Monitor</a>
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a href="#/performance">Performance</a>
+                    </li>
+                    <li><a href="#/manage">Manage HAR files</a>
+                    </li>
+                </ul>
+                <form class="navbar-form navbar-right">
+                    <div class="form-group">
+                        <select id="profiles" class="form-control"></select>
+                    </div>
+                    <button id="addProfile" type="button" class="btn btn-primary">Add Profile</button>
+                </form>
+            </div>
+            <!--/.navbar-collapse -->
+        </div>
+    </nav>
 
-	<script src="js/har-performance-monitor.js?rel=1423843001738"></script>
+    <div class="container">
+       <ng-view></ng-view>
+    </div>
+    <!-- /.container -->
+
+    <script src="js/har-performance-monitor.js?rel=1423845505389"></script>
 </body>
 </html>

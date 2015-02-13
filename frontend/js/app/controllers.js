@@ -2,7 +2,11 @@
 
 /* Controllers */
 
-angular.module('harPerformanceMonitor.controllers', []).
-  controller('MyCtrl1', [function() {
+angular.module('harPerformanceMonitor.controllers', [])
 
-  }]);
+.controller('PerformanceCtrl', [function() {
+
+}])
+.controller('ManageCtrl', [function() {
+
+}])
