@@ -23364,20 +23364,83 @@ function ngViewFillContentFactory($compile, $controller, $route) {
 
 // Demonstrate how to register services
 // In this case it is a simple value service.
-angular.module('harPerformanceMonitor.services', []).  
-  factory('_', function() {
+angular.module('harPerformanceMonitor.services', [])
+  .factory('_',[function() {
      return window._; // assumes underscore has already been loaded on the page
+  }])
+  
+  .factory('profilePerformanceService', ['$http', function($http) {
+     return {
+       get: function (profileID) {
+         return $http.jsonp(config.domain+'/getPerformanceProfile?profile='+profileID+'&callback=JSON_CALLBACK').then(function(res) {
+                    var log = res.data;
+                    log = log.data.map(function(log){
+                      // parse date, and offset values to series is visible
+                      return [Date.parse(log.timestamp), log.avg];
+                    });
+                    return log;
+                });
+       }
+     };
+  }])
+
+  .factory('profielListService', ['$http',function($http) {
+     return {
+       get: function () {
+           return $http.jsonp(config.domain+'/getAllProfiles?callback=JSON_CALLBACK').then(function(res) {
+              return res.data.data.map(function (p) {
+                return {name: p, id:p};
+           });
+      });
+       }
+     };
+  }]);
+
+
+  /*function parseDmzLogs(log,weeks){
+  log = JSON.parse("["+ log.trim().slice(0, - 1) + "]");
+
+  var currentDate = new Date();
+  var checkDate = new Date(currentDate.setDate(currentDate.getDate() - weeks * 7 ));
+
+  var filteredLog = _.reject(log, function(entry){
+    var entryDate = new Date(Date.parse(entry[0]));
+      return entryDate < checkDate;
   });
-;
+
+  logLatency = filteredLog.map(function(val){ return [val[0],val[3]];});
+  logReads = filteredLog.map(function(val){ return [val[0],val[1]];});
+  logWrites = filteredLog.map(function(val){ return [val[0],val[2]];});
+
+  return [logReads,logWrites,logLatency];
+}*/;
 'use strict';
 
 /* Controllers */
 
 angular.module('harPerformanceMonitor.controllers', [])
 
-.controller('PerformanceCtrl', [function() {
+.controller('PerformanceCtrl', ['$scope','profilePerformanceService','profielListService', function($scope,profilePerformanceService,profielListService) {
+  $scope.showHelp = true;
+  $scope.chart = {};// will be used to call methods in chart directive
+
+  profielListService.get().then(function (list) {
+    $scope.profiles = list;
+    $scope.profile = $scope.profiles[0];
+  });
+
+  $scope.displayProfilePerformance =  function () {
+    profilePerformanceService.get($scope.profile.name).then(function (log) {
+      $scope.showHelp = false;
+      $scope.chart.addSeries({
+          data:log,
+          name:$scope.profile.name
+      });
+    });
+  };
 
 }])
+
 .controller('ManageCtrl', [function() {
 
 }]);
@@ -23393,11 +23456,119 @@ angular.module('harPerformanceMonitor.filters', []);
 
 
 angular.module('harPerformanceMonitor.directives', []).
-  directive('appVersion', ['version', function(version) {
-    return function(scope, elm, attrs) {
-      elm.text(version);
-    };
-  }]);
+  
+directive('performanceChart', [function() {
+  return {
+    restrict: 'E',
+    template:' <div id="chart"></div>',
+    scope:{
+        control:'='
+    },
+    link: function (scope, element, attrs) {
+      // functions and properties from internal conteol will be accessible to controller that bind an object with scope.control
+      scope.internalControl = scope.control || {};      
+      scope.internalControl.addSeries = function (series) {
+          element.highcharts().addSeries(series);
+      }
+      
+      Highcharts.setOptions({
+          global: {
+              useUTC: false
+          }
+      });
+
+      
+      element.height($("body").height() - $(".profile-selector").outerHeight() - 10);
+      element.width(angular.element('.container').width());
+
+      /**
+       * Start Defining chart here
+       */
+      element.highcharts('StockChart',{
+          chart: {
+              type: 'spline',
+              zoomType: 'x'
+          },
+          rangeSelector: {
+           buttons: [{
+             type: 'day',
+             count: 1,
+             text: '1 day'
+           },{
+             type: 'week',
+             count: 1,
+             text: '1 wk'
+           },{
+             type: 'month',
+             count: 1,
+             text: '1m'
+           },{
+             type: 'all',
+             text: 'All'
+           }]
+          },
+          legend: {
+               enabled: true,
+          },
+          plotOptions: {
+              series: {
+                  marker: {
+                      enabled: false
+                  },
+                  states: {
+                          hover: {
+                              enabled: false,
+                              lineWidth: null
+                          }
+                      }
+              }
+          },
+          title: {
+              text: null
+          },
+          subtitle: {
+              text: null
+          },
+          xAxis: {
+              type: 'datetime',
+              tickInterval: 1000 * 60 * 60 * 6,
+
+             //min: log[0][0],
+             //max: log[log.length -1 ][0],
+             dateTimeLabelFormats : {
+                     hour: '%I:%M %p',
+                     minute: '%i:%M %p'
+               }
+          },
+          yAxis: [{ // first Y axis
+                    title: {
+                        text: 'Total Response Time (secs)'
+                    },
+                    min: 0,
+                    opposite: false
+                    //max: 25000
+
+                   },
+                   {  // second Y axis
+                     title: {
+                         text: 'DMZ Latency (milli secs)'
+                     },
+                     opposite: true
+                   },{  // third Y axis
+                     title: {
+                         text: 'DMZ Read Writes (count)'
+                     },
+                     opposite: true
+                   }],
+
+          series: [],
+          credits: {
+                    enabled: false
+                }
+      }); 
+    }
+  };
+}]);
 ;
 'use strict';
 
@@ -23631,153 +23802,3 @@ Highcharts.setOptions(Highcharts.theme);;
 var config = {
 	domain: 'http://localhost:4731'
 };
-var offset = 0;
-var once = false;
-var chart;
-
-$(function () {
-       //populate Profiles dropdown
-       $.when($.getJSON(config.domain+'/getAllProfiles?callback=?')).then(function(profiles){
-          profiles.data.forEach(function (profile) {
-            $('#profiles').append("<option val='"+profile+"'>"+profile+"</option>");
-          })
-       });
-
-       $("#addProfile").click(function (evt) {
-          if(!once){ chart = addChart(); once=true};
-          addProfile(chart,  $('#profiles').val());
-       });
-});
-
-function addProfile(chart, profileID){
-  $.when(
-      $.getJSON(config.domain+'/getPerformanceProfile?profile='+profileID+'&callback=?')
-  ).then(function(log) {
-
-        log = log.data.map(function(log){
-          // parse date, and offset values to series is visible
-          return [Date.parse(log.timestamp), log.avg + (offset)];
-        });
-
-        offset = offset + 2;
-
-        chart.addSeries({
-          data:log,
-          name:profileID
-        })
-
-        /*llvQaLog = llvQaLog[0];
-        llvQaAvgLog = _.map(llvQaAvgLog[0],function(v){ return [v[0],v[1]+100]; }); // offset slr average by 200 so it is visible*/
-  });
-}
-
-function addChart(){
-  Highcharts.setOptions({
-      global: {
-          useUTC: false
-      }
-  });
-
-  $('#chart').height($("body").height() - $("nav").height() - 80);
-  $('#chart').highcharts('StockChart',{
-      chart: {
-          type: 'spline',
-          zoomType: 'x'
-      },
-      rangeSelector: {
-       buttons: [{
-         type: 'day',
-         count: 1,
-         text: '1 day'
-       },{
-         type: 'week',
-         count: 1,
-         text: '1 wk'
-       },{
-         type: 'month',
-         count: 1,
-         text: '1m'
-       },{
-         type: 'all',
-         text: 'All'
-       }]
-      },
-      legend: {
-           enabled: true,
-      },
-      plotOptions: {
-          series: {
-              marker: {
-                  enabled: false
-              },
-              states: {
-                      hover: {
-                          enabled: false,
-                          lineWidth: null
-                      }
-                  }
-          }
-      },
-      title: {
-          text: null
-      },
-      subtitle: {
-          text: null
-      },
-      xAxis: {
-          type: 'datetime',
-          tickInterval: 1000 * 60 * 60 * 6,
-
-         //min: log[0][0],
-         //max: log[log.length -1 ][0],
-         dateTimeLabelFormats : {
-                 hour: '%I:%M %p',
-                 minute: '%i:%M %p'
-           }
-      },
-      yAxis: [{ // first Y axis
-                title: {
-                    text: 'Total Response Time (secs)'
-                },
-                min: 0,
-                opposite: false
-                //max: 25000
-
-               },
-               {  // second Y axis
-                 title: {
-                     text: 'DMZ Latency (milli secs)'
-                 },
-                 opposite: true
-               },{  // third Y axis
-                 title: {
-                     text: 'DMZ Read Writes (count)'
-                 },
-                 opposite: true
-               }],
-
-      series: [],
-      credits: {
-                enabled: false
-            }
-  });
-
-  return $('#chart').highcharts();
-}
-/*function parseDmzLogs(log,weeks){
-  log = JSON.parse("["+ log.trim().slice(0, - 1) + "]");
-
-  var currentDate = new Date();
-  var checkDate = new Date(currentDate.setDate(currentDate.getDate() - weeks * 7 ));
-
-  var filteredLog = _.reject(log, function(entry){
-    var entryDate = new Date(Date.parse(entry[0]));
-      return entryDate < checkDate;
-  });
-
-  logLatency = filteredLog.map(function(val){ return [val[0],val[3]];});
-  logReads = filteredLog.map(function(val){ return [val[0],val[1]];});
-  logWrites = filteredLog.map(function(val){ return [val[0],val[2]];});
-
-  return [logReads,logWrites,logLatency];
-}*/
