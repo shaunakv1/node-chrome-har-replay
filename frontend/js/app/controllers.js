@@ -5,6 +5,7 @@
 angular.module('harPerformanceMonitor.controllers', [])
 
 .controller('PerformanceCtrl', ['$scope','profilePerformanceService','profielListService', function($scope,profilePerformanceService,profielListService) {
+  $scope.sideBar = true;
   $scope.showHelp = true;
   $scope.chart = {};// will be used to call methods in chart directive
 
@@ -26,5 +27,5 @@ angular.module('harPerformanceMonitor.controllers', [])
 }])
 
 .controller('ManageCtrl', [function() {
-
+  
 }])
