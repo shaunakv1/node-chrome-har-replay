@@ -23479,26 +23479,19 @@ angular.module('harPerformanceMonitor.controllers', [])
 
 .controller('ManageCurrentCtrl', ['$scope','profileListService','loadProfileService', function($scope,profileListService,loadProfileService){
   
-  $scope.har = [
-    {
-        "firstName": "Cox",
-        "lastName": "Carney",
-        "company": "Enormo",
-        "employed": true
-    },
-    {
-        "firstName": "Lorraine",
-        "lastName": "Wise",
-        "company": "Comveyer",
-        "employed": false
-    },
-    {
-        "firstName": "Nancy",
-        "lastName": "Waters",
-        "company": "Fuelton",
-        "employed": false
-    }
-];
+  $scope.gridOptions = {
+          enableSorting: true,
+          columnDefs: [
+            { name:'Path', field: 'request.url' }
+            // { name:'1stFriend', field: 'friends[0]' },
+            // { name:'city', field: 'address.city'},
+            // { name:'getZip', field: 'getZip()', enableCellEdit:false}
+          ],
+          data : [ 
+                 ]
+        };
+  
+  $scope.har;
 
   profileListService.get().then(function (list) {
     $scope.profiles = list;
@@ -23510,6 +23503,7 @@ angular.module('harPerformanceMonitor.controllers', [])
     loadProfileService.get($scope.profile.id).then(function (profile) {
       console.log(profile);
       $scope.har = profile;
+      $scope.gridOptions.data = $scope.har.log.entries;
     });
   }
 
