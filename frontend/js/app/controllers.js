@@ -42,6 +42,27 @@ angular.module('harPerformanceMonitor.controllers', [])
 
 .controller('ManageCurrentCtrl', ['$scope','profileListService','loadProfileService', function($scope,profileListService,loadProfileService){
   
+  $scope.har = [
+    {
+        "firstName": "Cox",
+        "lastName": "Carney",
+        "company": "Enormo",
+        "employed": true
+    },
+    {
+        "firstName": "Lorraine",
+        "lastName": "Wise",
+        "company": "Comveyer",
+        "employed": false
+    },
+    {
+        "firstName": "Nancy",
+        "lastName": "Waters",
+        "company": "Fuelton",
+        "employed": false
+    }
+];
+
   profileListService.get().then(function (list) {
     $scope.profiles = list;
     $scope.profile = $scope.profiles[0];
@@ -51,6 +72,7 @@ angular.module('harPerformanceMonitor.controllers', [])
     console.log($scope.profile);
     loadProfileService.get($scope.profile.id).then(function (profile) {
       console.log(profile);
+      $scope.har = profile;
     });
   }
 

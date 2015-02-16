@@ -7,7 +7,8 @@ angular.module('harPerformanceMonitor', [
   'harPerformanceMonitor.filters',
   'harPerformanceMonitor.services',
   'harPerformanceMonitor.directives',
-  'harPerformanceMonitor.controllers'
+  'harPerformanceMonitor.controllers',
+  'ui.grid'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/performance', {templateUrl: 'partials/_performance.html', controller: 'PerformanceCtrl'});

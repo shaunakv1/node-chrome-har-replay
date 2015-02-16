@@ -6,6 +6,8 @@
     "js/lib/highstock.js",
     "js/lib/angular/angular.js",
     "js/lib/angular/angular-route.js",
+    "js/lib/ui-grid.min.js",
+    
     
     "js/app/services.js",
     "js/app/controllers.js",
