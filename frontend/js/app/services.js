@@ -35,8 +35,17 @@ angular.module('harPerformanceMonitor.services', [])
       });
        }
      };
-  }]);
+  }])
 
+  .factory('loadProfileService', ['$http', function($http) {
+     return {
+       get: function (profileID) {
+         return $http.jsonp(config.domain+'/getProfile?profile='+profileID+'&callback=JSON_CALLBACK').then(function(res) {
+            return res.data.har;
+         });
+       }
+     };
+  }]);
 
   /*function parseDmzLogs(log,weeks){
   log = JSON.parse("["+ log.trim().slice(0, - 1) + "]");

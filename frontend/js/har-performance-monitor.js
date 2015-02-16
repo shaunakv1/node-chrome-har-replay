@@ -23394,8 +23394,17 @@ angular.module('harPerformanceMonitor.services', [])
       });
        }
      };
-  }]);
+  }])
 
+  .factory('loadProfileService', ['$http', function($http) {
+     return {
+       get: function (profileID) {
+         return $http.jsonp(config.domain+'/getProfile?profile='+profileID+'&callback=JSON_CALLBACK').then(function(res) {
+            return res.data.har;
+         });
+       }
+     };
+  }]);
 
   /*function parseDmzLogs(log,weeks){
   log = JSON.parse("["+ log.trim().slice(0, - 1) + "]");
@@ -23456,7 +23465,7 @@ angular.module('harPerformanceMonitor.controllers', [])
 
 }])
 
-.controller('ManageCurrentCtrl', ['$scope','profileListService', function($scope,profileListService){
+.controller('ManageCurrentCtrl', ['$scope','profileListService','loadProfileService', function($scope,profileListService,loadProfileService){
   
   profileListService.get().then(function (list) {
     $scope.profiles = list;
@@ -23465,6 +23474,9 @@ angular.module('harPerformanceMonitor.controllers', [])
 
   $scope.loadProfile = function() {
     console.log($scope.profile);
+    loadProfileService.get($scope.profile.id).then(function (profile) {
+      console.log(profile);
+    });
   }
 
 }])

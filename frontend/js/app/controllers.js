@@ -40,7 +40,7 @@ angular.module('harPerformanceMonitor.controllers', [])
 
 }])
 
-.controller('ManageCurrentCtrl', ['$scope','profileListService', function($scope,profileListService){
+.controller('ManageCurrentCtrl', ['$scope','profileListService','loadProfileService', function($scope,profileListService,loadProfileService){
   
   profileListService.get().then(function (list) {
     $scope.profiles = list;
@@ -49,6 +49,9 @@ angular.module('harPerformanceMonitor.controllers', [])
 
   $scope.loadProfile = function() {
     console.log($scope.profile);
+    loadProfileService.get($scope.profile.id).then(function (profile) {
+      console.log(profile);
+    });
   }
 
 }])
