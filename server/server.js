@@ -53,11 +53,30 @@ app.get('/getPerformanceProfile', function(req, res) {
  */
 
 app.get('/getAllProfiles', function(req, res) {
-  var p = req.query.profile;
   res.setTimeout(0);
 
   res.jsonp({
     data:fs.readdirSync('../worker/har')
+  });
+
+});//finish app.get
+
+
+/**
+ * Web Service 3: getProfile
+ * Get Parameters
+ * profile=profileHarFile
+ *
+ * sample url
+ * /getProfile?profile = llv_agol_har.json
+ */
+
+app.get('/getProfile', function(req, res) {
+  var p = req.query.profile;
+  res.setTimeout(0);
+
+  res.jsonp({
+    har: JSON.parse(fs.readFileSync('../worker/har/'+p))
   });
 
 });//finish app.get
