@@ -1,11 +1,17 @@
 <div class="col-sm-3 col-md-2 sidebar well">
       <ul class="nav nav-sidebar">
-        <li class="active"><a href="#">Modify current HARs</a></li>
-        <li><a href="#">Upload New HARs</a></li>
-        <li><a href="#">Monitor Settings</a></li>
+        <li ng-class="{ 'active': activePage.url === pages[0].url }">
+        	<a ng-click="manage($event, pages[0])" href="#">Modify current HARs</a>
+        </li>
+        <li ng-class="{ 'active': activePage.url === pages[1].url }">
+        	<a ng-click="manage($event, pages[1])" href="#">Upload New HARs</a>
+    	</li>
+        <li ng-class="{ 'active': activePage.url === pages[2].url }">
+        	<a ng-click="manage($event, pages[2])" href="#">Monitor Settings</a>
+        </li>
       </ul>
 </div>
 
 <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-	<ng-include src="'partials/_manage_current.html'"></ng-include>
+	<ng-include src="activePage.url"></ng-include>
 </div>

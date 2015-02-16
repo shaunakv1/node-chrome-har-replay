@@ -26,6 +26,28 @@ angular.module('harPerformanceMonitor.controllers', [])
 
 }])
 
-.controller('ManageCtrl', [function() {
-  
+.controller('ManageCtrl', ['$scope', function($scope) {
+  $scope.pages = [
+      {url: 'partials/_manage_current.html'},
+      {url: 'partials/_manage_new.html'},
+      {url: 'partials/_manage_settings.html'}
+  ];
+  $scope.manage = function (e,page) {
+    e.preventDefault();
+    $scope.activePage = page;    
+  }
+  $scope.activePage = $scope.pages[0];
+
+}])
+
+.controller('ManageCurrentCtrl', ['$scope', function($scope){
+    console.log('ManageCurrentCtrl')
+}])
+
+.controller('ManageNewCtrl', ['$scope', function($scope){
+    console.log('ManageNewCtrl')
+}])
+
+.controller('ManageSettingsCtrl', ['$scope', function($scope){
+    console.log('ManageSettingsCtrl')
 }])
