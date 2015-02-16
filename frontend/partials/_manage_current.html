@@ -1,3 +1,20 @@
 <div ng-controller="ManageCurrentCtrl">
-	<h1>Manage Current Har Files</h1>
+	<div class="row profile-selector">
+	      <div class="col-xs-5 col-md-5">
+	      	<h1>Manage HAR Files</h1>
+	      </div>
+	      <div class="form-container col-xs-7 col-md-7">
+		    <form class="form-inline">
+		            <div class="form-group">
+		                <select ng-model="profile" ng-options="profile.name for profile in profiles" class="form-control"></select>
+		            </div>
+		            <button ng-click="loadProfile()" type="button" class="btn btn-primary">Load HAR File</button>
+		    </form>
+	      </div>
+	</div>
+	   
+	<div class="row">
+	  
+	</div>
 </div>
+

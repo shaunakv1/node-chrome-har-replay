@@ -4,12 +4,12 @@
 
 angular.module('harPerformanceMonitor.controllers', [])
 
-.controller('PerformanceCtrl', ['$scope','profilePerformanceService','profielListService', function($scope,profilePerformanceService,profielListService) {
+.controller('PerformanceCtrl', ['$scope','profilePerformanceService','profileListService', function($scope,profilePerformanceService,profileListService) {
   $scope.sideBar = true;
   $scope.showHelp = true;
   $scope.chart = {};// will be used to call methods in chart directive
 
-  profielListService.get().then(function (list) {
+  profileListService.get().then(function (list) {
     $scope.profiles = list;
     $scope.profile = $scope.profiles[0];
   });
@@ -40,8 +40,17 @@ angular.module('harPerformanceMonitor.controllers', [])
 
 }])
 
-.controller('ManageCurrentCtrl', ['$scope', function($scope){
-    console.log('ManageCurrentCtrl')
+.controller('ManageCurrentCtrl', ['$scope','profileListService', function($scope,profileListService){
+  
+  profileListService.get().then(function (list) {
+    $scope.profiles = list;
+    $scope.profile = $scope.profiles[0];
+  });
+
+  $scope.loadProfile = function() {
+    console.log($scope.profile);
+  }
+
 }])
 
 .controller('ManageNewCtrl', ['$scope', function($scope){

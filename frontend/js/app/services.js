@@ -25,7 +25,7 @@ angular.module('harPerformanceMonitor.services', [])
      };
   }])
 
-  .factory('profielListService', ['$http',function($http) {
+  .factory('profileListService', ['$http',function($http) {
      return {
        get: function () {
            return $http.jsonp(config.domain+'/getAllProfiles?callback=JSON_CALLBACK').then(function(res) {
