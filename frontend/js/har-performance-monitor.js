@@ -23477,12 +23477,16 @@ angular.module('harPerformanceMonitor.controllers', [])
 
 }])
 
-.controller('ManageCurrentCtrl', ['$scope','profileListService','loadProfileService', function($scope,profileListService,loadProfileService){
+.controller('ManageCurrentCtrl', ['$scope','profileListService','loadProfileService','uiGridConstants', function($scope,profileListService,loadProfileService,uiGridConstants){
   
   $scope.gridOptions = {
           enableSorting: true,
+          showGridFooter: true,
+          enableFiltering: true,
           columnDefs: [
-            { name:'Path', field: 'request.url' }
+            { name:'Path', field: 'request.url', width: '80%', filter: { condition: uiGridConstants.filter.CONTAINS}},
+            { name:'Type', field: 'response.content.mimeType', width: '10%',filter: { condition: uiGridConstants.filter.CONTAINS} },
+            { name:'Status', field: 'response.status',width: '10%' }
             // { name:'1stFriend', field: 'friends[0]' },
             // { name:'city', field: 'address.city'},
             // { name:'getZip', field: 'getZip()', enableCellEdit:false}
